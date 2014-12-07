@@ -46,6 +46,12 @@
   PRIMARY KEY (`cbsmanagerid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
 </table>
+<table>
+<name>vtiger_cbsqueue</name>
+<sql><![CDATA[CREATE TABLE `vtiger_cbsqueue` (
+  `cbsstat` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+</table>
 </tables>
 <blocks>
 <block>

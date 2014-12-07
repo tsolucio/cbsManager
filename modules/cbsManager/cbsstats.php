@@ -17,4 +17,55 @@
  *  Author       : JPL TSolucio, S. L.
  *************************************************************************************************/
 
+$accesskey = trim(filter_input(INPUT_GET, 'accesskey',FILTER_SANITIZE_MAGIC_QUOTES));
+if (!empty($accesskey)) {
+	/******
+	 * Default database connection information
+	 * THIS IS NOT REQUIRED IF EXECUTING FROM INSIDE coreBOS
+	 ******/
+	$dbconfig['db_server'] = 'your_server';
+	$dbconfig['db_port'] = ':3306';
+	$dbconfig['db_username'] = 'your_user';
+	$dbconfig['db_password'] = 'your_password';
+	$dbconfig['db_name'] = 'your_database';
+	/****************************************************************/
+	if (file_exists('config.inc.php')) {
+		include_once 'config.inc.php';
+	}
+	$uri = 'mysql:host='.$dbconfig['db_server'].';port='.$dbconfig['db_port'].';dbname='.$dbconfig['db_name'];
+	$dbh = new PDO($uri, $dbconfig['db_username'], $dbconfig['db_password'], array( PDO::ATTR_PERSISTENT => false));
+	$sql = "SELECT authfrom
+			FROM vtiger_cbsmanager
+			INNER JOIN vtiger_crmentity on crmid=cbsmanagerid
+			WHERE deleted=0 and active='1' and accesskey=:accesskey limit 1";
+	$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+	$ok = $sth->execute(array(':accesskey' => $accesskey));
+	if ($ok) {
+		$ath = $sth->fetch();
+		$sth->closeCursor();
+		$acceptedDomains = explode($ath);
+		$referer=get_domain($_SERVER['HTTP_REFERER']);
+		var_dump($_SERVER);
+		echo get_domain($_SERVER['HTTP_REFERER']);
+		if($referer && in_array($referer,$acceptedDomains) && in_array($_SERVER['REMOTE_ADDR'],$acceptedDomains)) {
+			$stat = trim(filter_input(INPUT_GET, 'stat'));
+			$sql = 'INSERT INTO vtiger_cbsqueue VALUES(:stat)';
+			$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+			$ok = $sth->execute(array(':stat' => $stat));
+		}
+	}
+}
+
+// Helper functions
+
+function get_domain($url)
+{
+  $pieces = parse_url($url);
+  $domain = isset($pieces['host']) ? $pieces['host'] : '';
+  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) 
+  {
+     return $regs['domain'];
+  }
+  return false;
+}
 ?>
