@@ -17,6 +17,14 @@
  *  Author       : JPL TSolucio, S. L.
  *************************************************************************************************/
 
+/*****  Documentation *****
+ * Must be called with two GET parameters
+ *  accesskey: created in the application by the cbsManager module
+ *       this must also correspond with the IP and domain authorized in that record.
+ *       The IP MUST be preset always
+ *  stat: a JSON object with the statistical information to save
+ */
+
 $accesskey = trim(filter_input(INPUT_GET, 'accesskey',FILTER_SANITIZE_MAGIC_QUOTES));
 if (!empty($accesskey)) {
 	/******
@@ -31,6 +39,9 @@ if (!empty($accesskey)) {
 	/****************************************************************/
 	if (file_exists('config.inc.php')) {
 		include_once 'config.inc.php';
+	}
+	if (file_exists('../../config.inc.php')) {
+		include_once '../../config.inc.php';
 	}
 	$uri = 'mysql:host='.$dbconfig['db_server'].';port='.$dbconfig['db_port'].';dbname='.$dbconfig['db_name'];
 	$dbh = new PDO($uri, $dbconfig['db_username'], $dbconfig['db_password'], array( PDO::ATTR_PERSISTENT => false));

@@ -48,9 +48,11 @@
 </table>
 <table>
 <name>vtiger_cbsqueue</name>
-<sql><![CDATA[CREATE TABLE `vtiger_cbsqueue` (
-  `cbsstat` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_cbsqueue` (
+  `cbstatid` int(11) NOT NULL AUTO_INCREMENT,
+  `cbsstat` text,
+  PRIMARY KEY (`cbstatid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8]]></sql>
 </table>
 </tables>
 <blocks>
