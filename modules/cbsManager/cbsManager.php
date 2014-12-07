@@ -13,8 +13,8 @@ require_once('data/Tracker.php');
 class cbsManager extends CRMEntity {
 	var $db, $log; // Used in class functions of CRMEntity
 
-	var $table_name = 'vtiger_cbsconferencecalls';
-	var $table_index= 'cbsconferencecallsid';
+	var $table_name = 'vtiger_cbsmanager';
+	var $table_index= 'cbsmanagerid';
 	var $column_fields = Array();
 
 	/** Indicator if this is a custom module or standard module */
@@ -23,20 +23,20 @@ class cbsManager extends CRMEntity {
 	/**
 	 * Mandatory table for supporting custom fields.
 	 */
-	var $customFieldTable = Array('vtiger_cbsconferencecallscf', 'cbsconferencecallsid');
+	var $customFieldTable = Array('vtiger_cbsmanagercf', 'cbsmanagerid');
 
 	/**
 	 * Mandatory for Saving, Include tables related to this module.
 	 */
-	var $tab_name = Array('vtiger_crmentity', 'vtiger_cbsconferencecalls', 'vtiger_cbsconferencecallscf');
+	var $tab_name = Array('vtiger_crmentity', 'vtiger_cbsmanager', 'vtiger_cbsmanagercf');
 
 	/**
 	 * Mandatory for Saving, Include tablename and tablekey columnname here.
 	 */
 	var $tab_name_index = Array(
 		'vtiger_crmentity' => 'crmid',
-		'vtiger_cbsconferencecalls'   => 'cbsconferencecallsid',
-		'vtiger_cbsconferencecallscf' => 'cbsconferencecallsid');
+		'vtiger_cbsmanager'   => 'cbsmanagerid',
+		'vtiger_cbsmanagercf' => 'cbsmanagerid');
 
 	/**
 	 * Mandatory for Listing (Related listview)
@@ -135,6 +135,11 @@ class cbsManager extends CRMEntity {
 	}
 
 	function save_module($module) {
+		if ($this->mode=='') {
+			global $adb;
+			$updateQuery = "update vtiger_cbsmanager set accesskey=? where cbsmanagerid=?";
+			$updateResult = $adb->pquery($updateQuery,array(vtws_generateRandomAccessKey(12),$this->id));
+		}
 	}
 
 	/**
@@ -436,7 +441,7 @@ class cbsManager extends CRMEntity {
 			global $adb;
 			$acl = array('Accounts','Contacts','Leads');
 			$query = "SELECT blockid FROM vtiger_blocks WHERE tabid=? limit 1";
-			foreach ($ack as $mod) {
+			foreach ($acl as $mod) {
 				$modACL=Vtiger_Module::getInstance($mod);
 				if ($modACL) {
 					$blkrs = $adb->pquery($query,Array($modACL->id));

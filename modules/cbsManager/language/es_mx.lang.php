@@ -9,20 +9,15 @@
  ************************************************************************************/
 
 $mod_strings = Array(
-	'cbsConferenceCalls' => 'Llamadas',
-	'SINGLE_cbsConferenceCalls' => 'Llamada',
-	'cbsConferenceCalls ID' => 'ID Llamada',
-	'conferencecallno' => 'Nº Llamada',
-	'access_date' => 'Fecha Acceso',
-	'access_time' => 'Hora Inicio',
-	'access_end' => 'Hora Fin',
-	'totaltime' => 'Tiempo Total',
-	'relid' => 'Relacionado con',
-	'pbxid' => 'ID Centralita',
-	'extcmpid' => 'Campaña Externa',
-	'cmpid' => 'Campaña',
+	'cbsManager' => 'Administrador Estadísticas',
+	'SINGLE_cbsManager' => 'Administrador Estadísticas',
+	'cbsManager ID' => 'ID Administrador Estadísticas',
+	'cbsmanagerno' => 'Nº Administrador Estadísticas',
+	'accesskey' => 'Clave Acceso',
+	'authfrom' => 'Autorizado desde',
+	'active' => 'Activo',
 
-	'LBL_CBSCCALLS_INFORMATION' => 'Información Llamada',
+	'LBL_CBSMANAGER_INFORMATION' => 'Administrador Estadísticas',
 	'LBL_CUSTOM_INFORMATION' => 'Información Personalizada',
 	'LBL_DESCRIPTION_INFORMATION' => 'Descripción',
 

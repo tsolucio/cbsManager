@@ -41,29 +41,27 @@ if (!empty($accesskey)) {
 	$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
 	$ok = $sth->execute(array(':accesskey' => $accesskey));
 	if ($ok) {
-		$ath = $sth->fetch();
-		$sth->closeCursor();
-		$acceptedDomains = explode($ath);
-		$referer=get_domain($_SERVER['HTTP_REFERER']);
-		var_dump($_SERVER);
-		echo get_domain($_SERVER['HTTP_REFERER']);
-		if($referer && in_array($referer,$acceptedDomains) && in_array($_SERVER['REMOTE_ADDR'],$acceptedDomains)) {
-			$stat = trim(filter_input(INPUT_GET, 'stat'));
-			$sql = 'INSERT INTO vtiger_cbsqueue VALUES(:stat)';
-			$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-			$ok = $sth->execute(array(':stat' => $stat));
+		$ath = $sth->fetchColumn(0);
+		if ($ath) {
+			$sth->closeCursor();
+			$acceptedDomains = explode(',',$ath);
+			$referer=get_domain($_SERVER['HTTP_REFERER']);
+			if(($referer && in_array($referer,$acceptedDomains) && in_array($_SERVER['REMOTE_ADDR'],$acceptedDomains)) || in_array($_SERVER['REMOTE_ADDR'],$acceptedDomains)) {
+				$stat = trim(filter_input(INPUT_GET, 'stat'));
+				$sql = 'INSERT INTO vtiger_cbsqueue VALUES(:stat)';
+				$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+				$ok = $sth->execute(array(':stat' => $stat));
+			}
 		}
 	}
 }
 
 // Helper functions
 
-function get_domain($url)
-{
+function get_domain($url) {
   $pieces = parse_url($url);
   $domain = isset($pieces['host']) ? $pieces['host'] : '';
-  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) 
-  {
+  if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
      return $regs['domain'];
   }
   return false;
