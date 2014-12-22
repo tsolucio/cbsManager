@@ -51,7 +51,6 @@ $user = CRMEntity::getInstance('Users');
 $user->id=$user->getActiveAdminId();
 $user->retrieve_entity_info($user->id, 'Users');
 $_REQUEST['assigntype'] = 'U';
-$focus->column_fields['assigned_user_id'] = $user->id;
 $cbsqueue = $adb->query('select * from vtiger_cbsqueue');
 while ($st = $adb->fetch_array($cbsqueue)) {
 	$stat = json_decode($st['cbsstat'],TRUE);
@@ -101,6 +100,7 @@ while ($st = $adb->fetch_array($cbsqueue)) {
 				break;
 		}
 		$focus->mode = '';
+		$focus->column_fields['assigned_user_id'] = $user->id;
 		foreach ($stat as $key => $value) {
 			if ($key=='stat') continue;
 			if ($key=='relid' and empty($stat['relid'])) {
@@ -175,6 +175,7 @@ while ($st = $adb->fetch_array($cbsqueue)) {
 			$focus->column_fields[$field] = $value;
 		}
 		$focus->save($mod);
+		unset($focus);
 	}
 	$adb->pquery('DELETE FROM cbsstat WHERE cbstatid = ?',array($st['cbstatid']));
 }
